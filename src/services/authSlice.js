@@ -4,18 +4,21 @@ import Cookies from 'js-cookie';
 
 function checkIfCookieToken () {
  let myCookie = Cookies.get("uuid")
+  // timestamp is stamp on when token is created in milliseconds
+  // expiredToken triggers modal to open re: user do you want to login again?
+  // 1637572970168 - 42300000
 
     if(myCookie){
       return {
         token: myCookie,
+        expiredToken: false,
         timestamp: Date.now(),
-        expiredToken: false
       };
     } else {
       return {
         token: null,
-        timestamp: Date.now(),
-        expiredToken: false
+        expiredToken: false, 
+        timestamp: null,
       };
     }
 }
@@ -34,9 +37,11 @@ const slice = createSlice({
         state.timestamp = Date.now()
         //window.location.href=`${window.location.origin}/resources/account.html`
     },
+    // called with the logout which removes the cookie 
     setTokenLogout: (state)=>{
       state.token = null;
-      state.timestamp = Date.now()
+      state.timestamp = null;
+      state.expiredToken = null;
       if(Cookies.get('uuid')) {
         Cookies.remove('uuid');
       }
@@ -51,4 +56,3 @@ const slice = createSlice({
 export const { setToken, setTokenLogout, updateExpiredToken } = slice.actions
 
 export default slice.reducer
-
